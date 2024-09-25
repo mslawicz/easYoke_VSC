@@ -293,8 +293,8 @@ void Custom_APP_Init(void)
   /* set PnP_ID characteristic */
   pBuf = UpdateCharData;
   PLACE_DATA(pBuf, uint8_t, 0x01);  // Vendor ID source
-  PLACE_DATA(pBuf, uint16_t, 0x01DA); // Vendor ID Logitech
-  PLACE_DATA(pBuf, uint16_t, 0x03C1); // Product ID keyboard
+  PLACE_DATA(pBuf, uint16_t, 0x0483); // Vendor ID STMicroelectronics
+  PLACE_DATA(pBuf, uint16_t, 0x5710); // Product ID joystick in FS mode
   PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 
   Custom_STM_App_Update_Char(CUSTOM_STM_PNP_ID, UpdateCharData);
 
