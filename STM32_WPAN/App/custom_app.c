@@ -48,7 +48,8 @@ typedef struct
 } Custom_App_Context_t;
 
 /* USER CODE BEGIN PTD */
-
+#define PLACE_ARRAY(dest, src, size)  memcpy(dest, src, size); dest+=size
+#define PLACE_DATA(dest, type, data)  *((type*)dest) = (type)data; dest+=sizeof(type)
 /* USER CODE END PTD */
 
 /* Private defines ------------------------------------------------------------*/
@@ -77,6 +78,49 @@ uint8_t NotifyCharData[512];
 uint16_t Connection_Handle;
 /* USER CODE BEGIN PV */
 static uint8_t batteryLevelPct = 0;
+
+static const uint8_t HID_report_map[] = 
+{
+  /* joystick report */
+  0x05, 0x01,                    /* USAGE_PAGE (Generic Desktop) */
+  0x09, 0x04,                    /* USAGE (Joystick) */
+  0xa1, 0x01,                    /* COLLECTION (Application) */
+  0x05, 0x01,                    /*   USAGE_PAGE (Generic Desktop) */
+  0x09, 0x01,                    /*   USAGE (Pointer) */
+  0xa1, 0x00,                    /*   COLLECTION (Physical) */
+  0x75, 0x10,                    /*     REPORT_SIZE (16) */
+  0x16, 0x01, 0x80,              /*     LOGICAL_MINIMUM (-32767) */
+  0x26, 0xff, 0x7f,              /*     LOGICAL_MAXIMUM (32767) */
+  0x09, 0x30,                    /*     USAGE (X) */
+  0x09, 0x31,                    /*     USAGE (Y) */
+  0x09, 0x32,                    /*     USAGE (Z) */
+  0x95, 0x03,                    /*     REPORT_COUNT (3) */
+  0x81, 0x02,                    /*     INPUT (Data,Var,Abs) */
+  0xc0,                          /*   END_COLLECTION */
+  0x09, 0x39,                    /*   USAGE (Hat switch) */
+  0x15, 0x01,                    /*   LOGICAL_MINIMUM (1) */
+  0x25, 0x08,                    /*   LOGICAL_MAXIMUM (8) */
+  0x35, 0x00,                    /*   PHYSICAL_MINIMUM (0) */
+  0x46, 0x3b, 0x01,              /*   PHYSICAL_MAXIMUM (315) */
+  0x65, 0x14,                    /*   UNIT (Eng Rot:Angular Pos) */
+  0x75, 0x04,                    /*   REPORT_SIZE (4) */
+  0x95, 0x01,                    /*   REPORT_COUNT (1) */
+  0x81, 0x42,                    /*   INPUT (Data,Var,Abs, Null) */
+  0x75, 0x04,                    /*   REPORT_SIZE (4) */
+  0x95, 0x01,                    /*   REPORT_COUNT (1) */
+  0x81, 0x41,                    /*   INPUT (Cnst,Ary,Abs,Null) */
+  0x05, 0x09,                    /*   USAGE_PAGE (Button) */
+  0x19, 0x01,                    /*   USAGE_MINIMUM (Button 1) */
+  0x29, 0x08,                    /*   USAGE_MAXIMUM (Button 8) */
+  0x15, 0x00,                    /*   LOGICAL_MINIMUM (0) */
+  0x25, 0x01,                    /*   LOGICAL_MAXIMUM (1) */
+  0x75, 0x01,                    /*   REPORT_SIZE (1) */
+  0x95, 0x08,                    /*   REPORT_COUNT (8) */
+  0x55, 0x00,                    /*   UNIT_EXPONENT (0) */
+  0x65, 0x00,                    /*   UNIT (None) */
+  0x81, 0x02,                    /*   INPUT (Data,Var,Abs) */
+  0xC0    /*     END_COLLECTION	             */
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -125,38 +169,40 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
 
     case CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT\n\r");
+      Custom_App_Context.Report_Notification_Status = 1;
       /* USER CODE END CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT */
       break;
 
     case CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT\n\r");
+      Custom_App_Context.Report_Notification_Status = 0;
       /* USER CODE END CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT */
       break;
 
     case CUSTOM_STM_REP_MAP_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_REP_MAP_READ_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_REP_MAP_READ_EVT\n\r");
       /* USER CODE END CUSTOM_STM_REP_MAP_READ_EVT */
       break;
 
     case CUSTOM_STM_INFO_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_INFO_READ_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_INFO_READ_EVT\n\r");
       /* USER CODE END CUSTOM_STM_INFO_READ_EVT */
       break;
 
     case CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT:
       /* USER CODE BEGIN CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT\n\r");
       /* USER CODE END CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT */
       break;
 
     /* Device_Information */
     case CUSTOM_STM_PNP_ID_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_PNP_ID_READ_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_PNP_ID_READ_EVT\n\r");
       /* USER CODE END CUSTOM_STM_PNP_ID_READ_EVT */
       break;
 
@@ -170,12 +216,14 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     case CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT */
       APP_DBG_MSG("CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT\n\r");
+      Custom_App_Context.Bat_lvl_Notification_Status = 1;
       /* USER CODE END CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT */
       break;
 
     case CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT */
       APP_DBG_MSG("CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT\n\r");
+      Custom_App_Context.Bat_lvl_Notification_Status = 0;
       /* USER CODE END CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT */
       break;
 
@@ -237,9 +285,41 @@ void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
 void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
+  uint8_t* pBuf;
 
   /* set battery level characteristic */
   setBatteryLevelPct(66); //XXX test
+
+  /* set PnP_ID characteristic */
+  pBuf = UpdateCharData;
+  PLACE_DATA(pBuf, uint8_t, 0x01);  // Vendor ID source
+  PLACE_DATA(pBuf, uint16_t, 0x01DA); // Vendor ID Logitech
+  PLACE_DATA(pBuf, uint16_t, 0x03C1); // Product ID keyboard
+  PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 
+  Custom_STM_App_Update_Char(CUSTOM_STM_PNP_ID, UpdateCharData);
+
+  /* set HID protocol mode characteristic */
+  pBuf = UpdateCharData;
+  PLACE_DATA(pBuf, uint8_t, 0x01);  // Report Protocol mode
+  Custom_STM_App_Update_Char(CUSTOM_STM_PROT_MODE, UpdateCharData);
+
+  /* set HID information characteristic */
+  pBuf = UpdateCharData;
+  PLACE_DATA(pBuf, uint16_t, 0x0100); // bcd_HID
+  PLACE_DATA(pBuf, uint8_t, 0);  // country code (not localized)
+  PLACE_DATA(pBuf, uint8_t, 0x03); // flags
+  Custom_STM_App_Update_Char(CUSTOM_STM_INFO, UpdateCharData);
+
+  /* set HID report map */
+  SizeRep_Map = sizeof(HID_report_map);
+  pBuf = UpdateCharData;
+  PLACE_ARRAY(pBuf, HID_report_map, sizeof(HID_report_map));
+  Custom_STM_App_Update_Char(CUSTOM_STM_REP_MAP, UpdateCharData);
+
+  /* set HID report */
+  SizeReport = 8;
+  memset(UpdateCharData, 0, 8);
+  Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, UpdateCharData);
 
   /* USER CODE END CUSTOM_APP_Init */
   return;
@@ -280,7 +360,7 @@ void Custom_Report_Send_Notification(void) /* Property Notification */
   uint8_t updateflag = 0;
 
   /* USER CODE BEGIN Report_NS_1*/
-
+  updateflag = Custom_App_Context.Report_Notification_Status;
   /* USER CODE END Report_NS_1*/
 
   if (updateflag != 0)
@@ -322,7 +402,7 @@ void Custom_Bat_lvl_Send_Notification(void) /* Property Notification */
   uint8_t updateflag = 0;
 
   /* USER CODE BEGIN Bat_lvl_NS_1*/
-
+  updateflag = Custom_App_Context.Bat_lvl_Notification_Status;
   /* USER CODE END Bat_lvl_NS_1*/
 
   if (updateflag != 0)
