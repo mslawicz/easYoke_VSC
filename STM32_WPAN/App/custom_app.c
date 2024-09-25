@@ -76,7 +76,7 @@ uint8_t UpdateCharData[512];
 uint8_t NotifyCharData[512];
 uint16_t Connection_Handle;
 /* USER CODE BEGIN PV */
-
+static uint8_t batteryLevelPct = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -163,19 +163,19 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     /* Battery */
     case CUSTOM_STM_BAT_LVL_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_READ_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_BAT_LVL_READ_EVT\n\r");
       /* USER CODE END CUSTOM_STM_BAT_LVL_READ_EVT */
       break;
 
     case CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT\n\r");
       /* USER CODE END CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT */
       break;
 
     case CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT\n\r");
       /* USER CODE END CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT */
       break;
 
@@ -238,6 +238,9 @@ void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
 
+  /* set battery level characteristic */
+  setBatteryLevelPct(66); //XXX test
+
   /* USER CODE END CUSTOM_APP_Init */
   return;
 }
@@ -299,7 +302,8 @@ __USED void Custom_Bat_lvl_Update_Char(void) /* Property Read */
   uint8_t updateflag = 0;
 
   /* USER CODE BEGIN Bat_lvl_UC_1*/
-
+  UpdateCharData[0] = batteryLevelPct;
+  updateflag = 1;
   /* USER CODE END Bat_lvl_UC_1*/
 
   if (updateflag != 0)
@@ -334,5 +338,12 @@ void Custom_Bat_lvl_Send_Notification(void) /* Property Notification */
 }
 
 /* USER CODE BEGIN FD_LOCAL_FUNCTIONS*/
-
+void setBatteryLevelPct(uint8_t batLvlPct)
+{
+  if(batteryLevelPct != batLvlPct)
+  {
+    batteryLevelPct = batLvlPct;
+    Custom_Bat_lvl_Update_Char();
+  }
+}
 /* USER CODE END FD_LOCAL_FUNCTIONS*/
