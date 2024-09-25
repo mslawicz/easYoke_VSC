@@ -22,6 +22,7 @@
 #include "stm32wbxx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "game_controller.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -191,7 +192,11 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-
+  uint32_t ticks = HAL_GetTick();
+  if((ticks % GAME_CTRL_PERIOD) == 0)
+  {
+    UTIL_SEQ_SetTask(1 << CFG_TASK_GAME_CONTROLLER_ID, GAME_CTRL_PRIORITY);
+  }
   /* USER CODE END SysTick_IRQn 1 */
 }
 
