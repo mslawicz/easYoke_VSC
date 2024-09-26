@@ -78,6 +78,7 @@ uint8_t NotifyCharData[512];
 uint16_t Connection_Handle;
 /* USER CODE BEGIN PV */
 static uint8_t batteryLevelPct = 0;
+static uint8_t* pHidReport = NULL;
 
 static const uint8_t HID_report_map[] = 
 {
@@ -163,7 +164,7 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
 
     case CUSTOM_STM_REPORT_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_REPORT_READ_EVT */
-
+      APP_DBG_MSG("CUSTOM_STM_REPORT_READ_EVT\n\r");
       /* USER CODE END CUSTOM_STM_REPORT_READ_EVT */
       break;
 
@@ -258,13 +259,13 @@ void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
     /* USER CODE END P2PS_CUSTOM_Notification_Custom_Evt_Opcode */
     case CUSTOM_CONN_HANDLE_EVT :
       /* USER CODE BEGIN CUSTOM_CONN_HANDLE_EVT */
-
+      HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
       /* USER CODE END CUSTOM_CONN_HANDLE_EVT */
       break;
 
     case CUSTOM_DISCON_HANDLE_EVT :
       /* USER CODE BEGIN CUSTOM_DISCON_HANDLE_EVT */
-
+      HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_RESET);
       /* USER CODE END CUSTOM_DISCON_HANDLE_EVT */
       break;
 
@@ -317,8 +318,13 @@ void Custom_APP_Init(void)
   Custom_STM_App_Update_Char(CUSTOM_STM_REP_MAP, UpdateCharData);
 
   /* set HID report */
-  SizeReport = 8;
+  SizeReport = HID_REPORT_SIZE;
   memset(UpdateCharData, 0, 8);
+  UpdateCharData[1] = 0x40; //XXX test
+  UpdateCharData[3] = 0x8A;
+  UpdateCharData[5] = 80;
+  UpdateCharData[6] = 3;
+  UpdateCharData[7] = 0xAA;
   Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, UpdateCharData);
 
   /* USER CODE END CUSTOM_APP_Init */
@@ -341,7 +347,12 @@ __USED void Custom_Report_Update_Char(void) /* Property Read */
   uint8_t updateflag = 0;
 
   /* USER CODE BEGIN Report_UC_1*/
-
+  if(pHidReport != NULL)
+  {
+    memcpy(UpdateCharData, pHidReport, HID_REPORT_SIZE);
+    pHidReport = NULL;
+    updateflag = 1;
+  }
   /* USER CODE END Report_UC_1*/
 
   if (updateflag != 0)
@@ -360,7 +371,12 @@ void Custom_Report_Send_Notification(void) /* Property Notification */
   uint8_t updateflag = 0;
 
   /* USER CODE BEGIN Report_NS_1*/
-  updateflag = Custom_App_Context.Report_Notification_Status;
+  if(pHidReport != NULL)
+  {
+    memcpy(NotifyCharData, pHidReport, HID_REPORT_SIZE);
+    pHidReport = NULL;
+    updateflag = Custom_App_Context.Report_Notification_Status;
+  }
   /* USER CODE END Report_NS_1*/
 
   if (updateflag != 0)
@@ -425,5 +441,11 @@ void setBatteryLevelPct(uint8_t batLvlPct)
     batteryLevelPct = batLvlPct;
     Custom_Bat_lvl_Update_Char();
   }
+}
+
+void updateHidReport(uint8_t* pReport)
+{
+  pHidReport = pReport;
+  Custom_Report_Update_Char();
 }
 /* USER CODE END FD_LOCAL_FUNCTIONS*/

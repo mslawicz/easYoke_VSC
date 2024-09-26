@@ -51,7 +51,7 @@ typedef struct
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+#define HID_REPORT_SIZE 8
 /* USER CODE END EC */
 
 /* External variables --------------------------------------------------------*/
@@ -69,6 +69,7 @@ void Custom_APP_Init(void);
 void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification);
 /* USER CODE BEGIN EF */
 void setBatteryLevelPct(uint8_t batLvlPct);
+void updateHidReport(uint8_t* pReport);
 /* USER CODE END EF */
 
 #ifdef __cplusplus

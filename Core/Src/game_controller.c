@@ -1,5 +1,8 @@
 #include "game_controller.h"
 #include "main.h"
+#include "custom_app.h"
+
+uint8_t joyReport[HID_REPORT_SIZE];
 
 void gameController(void)
 {
@@ -13,6 +16,18 @@ void gameController(void)
     {
         HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, ((BitPattern >> bitNumber) & 1) != 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
         bitNumber = (bitNumber + 1) % NumbOfBits;
+    }
+
+    /* XXX test of joystick report */
+    int16_t axisVal = -32767 + 655 * (loopCounter % 100);
+    *(int16_t*)joyReport = axisVal;
+    *(int16_t*)(joyReport + 2) = axisVal;
+    *(int16_t*)(joyReport + 4) = axisVal;
+    joyReport[6] = 1 + (loopCounter >> 4) % 8;  //HAT
+    joyReport[7] = 1 << ((loopCounter >> 5) % 8);   //buttons
+    if(loopCounter % 90 == 89)
+    {
+        //updateHidReport(joyReport);
     }
 
     loopCounter++;

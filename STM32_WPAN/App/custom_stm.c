@@ -73,8 +73,8 @@ extern uint16_t Connection_Handle;
 
 /* Private variables ---------------------------------------------------------*/
 uint16_t SizeProt_Mode = 1;
-uint16_t SizeReport = 64;
-uint16_t SizeRep_Map = 128;
+uint16_t SizeReport = 8;
+uint16_t SizeRep_Map = 77;
 uint16_t SizeInfo = 4;
 uint16_t SizeCtrl_Pt = 1;
 uint16_t SizePnp_Id = 7;
@@ -414,7 +414,7 @@ void SVCCTL_InitCustomSvc(void)
                           ATTR_PERMISSION_NONE,
                           GATT_DONT_NOTIFY_EVENTS,
                           0x10,
-                          CHAR_VALUE_LEN_VARIABLE,
+                          CHAR_VALUE_LEN_CONSTANT,
                           &(CustomContext.CustomReportHdle));
   if (ret != BLE_STATUS_SUCCESS)
   {
@@ -440,7 +440,7 @@ void SVCCTL_InitCustomSvc(void)
                           ATTR_PERMISSION_NONE,
                           GATT_DONT_NOTIFY_EVENTS,
                           0x10,
-                          CHAR_VALUE_LEN_VARIABLE,
+                          CHAR_VALUE_LEN_CONSTANT,
                           &(CustomContext.CustomRep_MapHdle));
   if (ret != BLE_STATUS_SUCCESS)
   {
