@@ -28,7 +28,7 @@ void gameController(void)
     joyReport[7] = 1 << ((loopCounter >> 5) % 8);   //buttons
     if(loopCounter % 90 == 89)
     {
-        //updateHidReport(joyReport);
+        updateHidReport(joyReport);
     }
 
     loopCounter++;

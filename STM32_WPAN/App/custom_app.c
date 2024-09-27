@@ -290,11 +290,11 @@ void Custom_APP_Init(void)
   uint8_t* pBuf;
 
   /* set battery level characteristic */
-  setBatteryLevelPct(66); //XXX test
+  setBatteryLevelPct(69); //XXX test
 
   /* set PnP_ID characteristic */
   pBuf = UpdateCharData;
-  PLACE_DATA(pBuf, uint8_t, 0x01);  // Vendor ID source
+  PLACE_DATA(pBuf, uint8_t, 0x02);  // Vendor ID source
   PLACE_DATA(pBuf, uint16_t, 0x0483); // Vendor ID STMicroelectronics
   PLACE_DATA(pBuf, uint16_t, 0x5710); // Product ID joystick in FS mode
   PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 
@@ -324,8 +324,9 @@ void Custom_APP_Init(void)
   UpdateCharData[1] = 0x40; //XXX test
   UpdateCharData[3] = 0x8A;
   UpdateCharData[5] = 80;
-  UpdateCharData[6] = 3;
-  UpdateCharData[7] = 0xAA;
+  UpdateCharData[7] = 0x8F;  
+  UpdateCharData[8] = 3;
+  UpdateCharData[9] = 0xAA;
   Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, UpdateCharData);
 
   /* USER CODE END CUSTOM_APP_Init */
