@@ -73,8 +73,8 @@ extern uint16_t Connection_Handle;
 
 /* Private variables ---------------------------------------------------------*/
 uint16_t SizeProt_Mode = 1;
-uint16_t SizeReport = 8;
-uint16_t SizeRep_Map = 77;
+uint16_t SizeReport = 10;
+uint16_t SizeRep_Map = 79;
 uint16_t SizeInfo = 4;
 uint16_t SizeCtrl_Pt = 1;
 uint16_t SizePnp_Id = 7;

@@ -95,7 +95,8 @@ static const uint8_t HID_report_map[] =
   0x09, 0x30,                    /*     USAGE (X) */
   0x09, 0x31,                    /*     USAGE (Y) */
   0x09, 0x32,                    /*     USAGE (Z) */
-  0x95, 0x03,                    /*     REPORT_COUNT (3) */
+  0x09, 0x36,                    /*     USAGE (slider) */
+  0x95, 0x04,                    /*     REPORT_COUNT (4) */
   0x81, 0x02,                    /*     INPUT (Data,Var,Abs) */
   0xc0,                          /*   END_COLLECTION */
   0x09, 0x39,                    /*   USAGE (Hat switch) */
@@ -120,7 +121,7 @@ static const uint8_t HID_report_map[] =
   0x55, 0x00,                    /*   UNIT_EXPONENT (0) */
   0x65, 0x00,                    /*   UNIT (None) */
   0x81, 0x02,                    /*   INPUT (Data,Var,Abs) */
-  0xC0    /*     END_COLLECTION	             */
+  0xC0                           /* END_COLLECTION	             */
 };
 /* USER CODE END PV */
 

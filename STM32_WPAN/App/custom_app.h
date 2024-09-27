@@ -51,7 +51,7 @@ typedef struct
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define HID_REPORT_SIZE 8
+#define HID_REPORT_SIZE 10
 /* USER CODE END EC */
 
 /* External variables --------------------------------------------------------*/
