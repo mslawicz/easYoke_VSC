@@ -248,7 +248,7 @@ void SVCCTL_InitCustomSvc(void)
 
   /* USER CODE END SVCCTL_InitService */
 
-  uuid.Char_UUID_16 = 0x0000;
+  uuid.Char_UUID_16 = 0x1812;
   ret = aci_gatt_add_service(UUID_TYPE_16,
                              (Service_UUID_t *) &uuid,
                              PRIMARY_SERVICE,
