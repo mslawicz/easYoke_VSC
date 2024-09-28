@@ -29,15 +29,7 @@
 /* Private typedef -----------------------------------------------------------*/
 typedef struct{
   uint16_t  CustomHidHdle;                    /**< Human_Interface_Device handle */
-  uint16_t  CustomProt_ModeHdle;                  /**< ProtocolMode handle */
-  uint16_t  CustomReportHdle;                  /**< Report handle */
   uint16_t  CustomRep_MapHdle;                  /**< ReportMap handle */
-  uint16_t  CustomInfoHdle;                  /**< Information handle */
-  uint16_t  CustomCtrl_PtHdle;                  /**< ControlPoint handle */
-  uint16_t  CustomDev_InfoHdle;                    /**< Device_Information handle */
-  uint16_t  CustomPnp_IdHdle;                  /**< PnP_ID handle */
-  uint16_t  CustomBatHdle;                    /**< Battery handle */
-  uint16_t  CustomBat_LvlHdle;                  /**< BatteryLevel handle */
 /* USER CODE BEGIN Context */
   /* Place holder for Characteristic Descriptors Handle*/
 
@@ -72,13 +64,7 @@ extern uint16_t Connection_Handle;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-uint16_t SizeProt_Mode = 1;
-uint16_t SizeReport = 64;
-uint16_t SizeRep_Map = 256;
-uint16_t SizeInfo = 4;
-uint16_t SizeCtrl_Pt = 1;
-uint16_t SizePnp_Id = 7;
-uint16_t SizeBat_Lvl = 1;
+uint16_t SizeRep_Map = 1;
 
 /**
  * START of Section BLE_DRIVER_CONTEXT
@@ -144,108 +130,13 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
 
           /* USER CODE END EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_BEGIN */
           attribute_modified = (aci_gatt_attribute_modified_event_rp0*)blecore_evt->data;
-          if (attribute_modified->Attr_Handle == (CustomContext.CustomReportHdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
-          {
-            return_value = SVCCTL_EvtAckFlowEnable;
-            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2 */
-
-            /* USER CODE END CUSTOM_STM_Service_1_Char_2 */
-            switch (attribute_modified->Attr_Data[0])
-            {
-              /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_attribute_modified */
-
-              /* USER CODE END CUSTOM_STM_Service_1_Char_2_attribute_modified */
-
-              /* Disabled Notification management */
-              case (!(COMSVC_Notification)):
-                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_Disabled_BEGIN */
-
-                /* USER CODE END CUSTOM_STM_Service_1_Char_2_Disabled_BEGIN */
-                Notification.Custom_Evt_Opcode = CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT;
-                Custom_STM_App_Notification(&Notification);
-                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_Disabled_END */
-
-                /* USER CODE END CUSTOM_STM_Service_1_Char_2_Disabled_END */
-                break;
-
-              /* Enabled Notification management */
-              case COMSVC_Notification:
-                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_BEGIN */
-
-                /* USER CODE END CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_BEGIN */
-                Notification.Custom_Evt_Opcode = CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT;
-                Custom_STM_App_Notification(&Notification);
-                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_END */
-
-                /* USER CODE END CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_END */
-                break;
-
-              default:
-                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_default */
-
-                /* USER CODE END CUSTOM_STM_Service_1_Char_2_default */
-              break;
-            }
-          }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomReportHdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
-
-          else if (attribute_modified->Attr_Handle == (CustomContext.CustomBat_LvlHdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
-          {
-            return_value = SVCCTL_EvtAckFlowEnable;
-            /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1 */
-
-            /* USER CODE END CUSTOM_STM_Service_3_Char_1 */
-            switch (attribute_modified->Attr_Data[0])
-            {
-              /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_attribute_modified */
-
-              /* USER CODE END CUSTOM_STM_Service_3_Char_1_attribute_modified */
-
-              /* Disabled Notification management */
-              case (!(COMSVC_Notification)):
-                /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_Disabled_BEGIN */
-
-                /* USER CODE END CUSTOM_STM_Service_3_Char_1_Disabled_BEGIN */
-                Notification.Custom_Evt_Opcode = CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT;
-                Custom_STM_App_Notification(&Notification);
-                /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_Disabled_END */
-
-                /* USER CODE END CUSTOM_STM_Service_3_Char_1_Disabled_END */
-                break;
-
-              /* Enabled Notification management */
-              case COMSVC_Notification:
-                /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_COMSVC_Notification_BEGIN */
-
-                /* USER CODE END CUSTOM_STM_Service_3_Char_1_COMSVC_Notification_BEGIN */
-                Notification.Custom_Evt_Opcode = CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT;
-                Custom_STM_App_Notification(&Notification);
-                /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_COMSVC_Notification_END */
-
-                /* USER CODE END CUSTOM_STM_Service_3_Char_1_COMSVC_Notification_END */
-                break;
-
-              default:
-                /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_default */
-
-                /* USER CODE END CUSTOM_STM_Service_3_Char_1_default */
-              break;
-            }
-          }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomBat_LvlHdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
-
-          else if (attribute_modified->Attr_Handle == (CustomContext.CustomProt_ModeHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
+          if (attribute_modified->Attr_Handle == (CustomContext.CustomRep_MapHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
 
             /* USER CODE END CUSTOM_STM_Service_1_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomProt_ModeHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
-          else if (attribute_modified->Attr_Handle == (CustomContext.CustomCtrl_PtHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
-          {
-            return_value = SVCCTL_EvtAckFlowEnable;
-            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_5_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-
-            /* USER CODE END CUSTOM_STM_Service_1_Char_5_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomCtrl_PtHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
+          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomRep_MapHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           /* USER CODE BEGIN EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_END */
 
           /* USER CODE END EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_END */
@@ -342,27 +233,22 @@ void SVCCTL_InitCustomSvc(void)
   /**
    *          Human_Interface_Device
    *
-   * Max_Attribute_Records = 1 + 2*5 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
+   * Max_Attribute_Records = 1 + 2*1 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
    * service_max_attribute_record = 1 for Human_Interface_Device +
-   *                                2 for ProtocolMode +
-   *                                2 for Report +
    *                                2 for ReportMap +
-   *                                2 for Information +
-   *                                2 for ControlPoint +
-   *                                1 for Report configuration descriptor +
-   *                              = 12
+   *                              = 3
    *
    * This value doesn't take into account number of descriptors manually added
    * In case of descriptors added, please update the max_attr_record value accordingly in the next SVCCTL_InitService User Section
    */
-  max_attr_record = 12;
+  max_attr_record = 3;
 
   /* USER CODE BEGIN SVCCTL_InitService */
   /* max_attr_record to be updated if descriptors have been added */
 
   /* USER CODE END SVCCTL_InitService */
 
-  uuid.Char_UUID_16 = 0x1812;
+  uuid.Char_UUID_16 = 0x0000;
   ret = aci_gatt_add_service(UUID_TYPE_16,
                              (Service_UUID_t *) &uuid,
                              PRIMARY_SERVICE,
@@ -378,69 +264,17 @@ void SVCCTL_InitCustomSvc(void)
   }
 
   /**
-   *  ProtocolMode
+   *  ReportMap
    */
-  uuid.Char_UUID_16 = 0x2a4e;
+  uuid.Char_UUID_16 = 0x0000;
   ret = aci_gatt_add_char(CustomContext.CustomHidHdle,
                           UUID_TYPE_16, &uuid,
-                          SizeProt_Mode,
+                          SizeRep_Map,
                           CHAR_PROP_READ | CHAR_PROP_WRITE_WITHOUT_RESP,
                           ATTR_PERMISSION_NONE,
                           GATT_NOTIFY_ATTRIBUTE_WRITE,
                           0x10,
                           CHAR_VALUE_LEN_CONSTANT,
-                          &(CustomContext.CustomProt_ModeHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : PROT_MODE, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : PROT_MODE \n\r");
-  }
-
-  /* USER CODE BEGIN SVCCTL_Init_Service1_Char1 */
-  /* Place holder for Characteristic Descriptors */
-
-  /* USER CODE END SVCCTL_Init_Service1_Char1 */
-  /**
-   *  Report
-   */
-  uuid.Char_UUID_16 = 0x2a4d;
-  ret = aci_gatt_add_char(CustomContext.CustomHidHdle,
-                          UUID_TYPE_16, &uuid,
-                          SizeReport,
-                          CHAR_PROP_READ | CHAR_PROP_NOTIFY,
-                          ATTR_PERMISSION_NONE,
-                          GATT_DONT_NOTIFY_EVENTS,
-                          0x10,
-                          CHAR_VALUE_LEN_VARIABLE,
-                          &(CustomContext.CustomReportHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : REPORT, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : REPORT \n\r");
-  }
-
-  /* USER CODE BEGIN SVCCTL_Init_Service1_Char2 */
-  /* Place holder for Characteristic Descriptors */
-
-  /* USER CODE END SVCCTL_Init_Service1_Char2 */
-  /**
-   *  ReportMap
-   */
-  uuid.Char_UUID_16 = 0x2a4b;
-  ret = aci_gatt_add_char(CustomContext.CustomHidHdle,
-                          UUID_TYPE_16, &uuid,
-                          SizeRep_Map,
-                          CHAR_PROP_READ,
-                          ATTR_PERMISSION_NONE,
-                          GATT_DONT_NOTIFY_EVENTS,
-                          0x10,
-                          CHAR_VALUE_LEN_VARIABLE,
                           &(CustomContext.CustomRep_MapHdle));
   if (ret != BLE_STATUS_SUCCESS)
   {
@@ -451,183 +285,10 @@ void SVCCTL_InitCustomSvc(void)
     APP_DBG_MSG("  Success: aci_gatt_add_char command   : REP_MAP \n\r");
   }
 
-  /* USER CODE BEGIN SVCCTL_Init_Service1_Char3 */
+  /* USER CODE BEGIN SVCCTL_Init_Service1_Char1 */
   /* Place holder for Characteristic Descriptors */
 
-  /* USER CODE END SVCCTL_Init_Service1_Char3 */
-  /**
-   *  Information
-   */
-  uuid.Char_UUID_16 = 0x2a4a;
-  ret = aci_gatt_add_char(CustomContext.CustomHidHdle,
-                          UUID_TYPE_16, &uuid,
-                          SizeInfo,
-                          CHAR_PROP_READ,
-                          ATTR_PERMISSION_NONE,
-                          GATT_DONT_NOTIFY_EVENTS,
-                          0x10,
-                          CHAR_VALUE_LEN_CONSTANT,
-                          &(CustomContext.CustomInfoHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : INFO, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : INFO \n\r");
-  }
-
-  /* USER CODE BEGIN SVCCTL_Init_Service1_Char4 */
-  /* Place holder for Characteristic Descriptors */
-
-  /* USER CODE END SVCCTL_Init_Service1_Char4 */
-  /**
-   *  ControlPoint
-   */
-  uuid.Char_UUID_16 = 0x2a4c;
-  ret = aci_gatt_add_char(CustomContext.CustomHidHdle,
-                          UUID_TYPE_16, &uuid,
-                          SizeCtrl_Pt,
-                          CHAR_PROP_WRITE_WITHOUT_RESP,
-                          ATTR_PERMISSION_NONE,
-                          GATT_NOTIFY_ATTRIBUTE_WRITE,
-                          0x10,
-                          CHAR_VALUE_LEN_CONSTANT,
-                          &(CustomContext.CustomCtrl_PtHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : CTRL_PT, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : CTRL_PT \n\r");
-  }
-
-  /* USER CODE BEGIN SVCCTL_Init_Service1_Char5 */
-  /* Place holder for Characteristic Descriptors */
-
-  /* USER CODE END SVCCTL_Init_Service1_Char5 */
-
-  /**
-   *          Device_Information
-   *
-   * Max_Attribute_Records = 1 + 2*1 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
-   * service_max_attribute_record = 1 for Device_Information +
-   *                                2 for PnP_ID +
-   *                              = 3
-   *
-   * This value doesn't take into account number of descriptors manually added
-   * In case of descriptors added, please update the max_attr_record value accordingly in the next SVCCTL_InitService User Section
-   */
-  max_attr_record = 3;
-
-  /* USER CODE BEGIN SVCCTL_InitService */
-  /* max_attr_record to be updated if descriptors have been added */
-
-  /* USER CODE END SVCCTL_InitService */
-
-  uuid.Char_UUID_16 = 0x180a;
-  ret = aci_gatt_add_service(UUID_TYPE_16,
-                             (Service_UUID_t *) &uuid,
-                             PRIMARY_SERVICE,
-                             max_attr_record,
-                             &(CustomContext.CustomDev_InfoHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_service command: DEV_INFO, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_service command: DEV_INFO \n\r");
-  }
-
-  /**
-   *  PnP_ID
-   */
-  uuid.Char_UUID_16 = 0x2a50;
-  ret = aci_gatt_add_char(CustomContext.CustomDev_InfoHdle,
-                          UUID_TYPE_16, &uuid,
-                          SizePnp_Id,
-                          CHAR_PROP_READ,
-                          ATTR_PERMISSION_NONE,
-                          GATT_DONT_NOTIFY_EVENTS,
-                          0x10,
-                          CHAR_VALUE_LEN_CONSTANT,
-                          &(CustomContext.CustomPnp_IdHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : PNP_ID, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : PNP_ID \n\r");
-  }
-
-  /* USER CODE BEGIN SVCCTL_Init_Service2_Char1 */
-  /* Place holder for Characteristic Descriptors */
-
-  /* USER CODE END SVCCTL_Init_Service2_Char1 */
-
-  /**
-   *          Battery
-   *
-   * Max_Attribute_Records = 1 + 2*1 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
-   * service_max_attribute_record = 1 for Battery +
-   *                                2 for BatteryLevel +
-   *                                1 for BatteryLevel configuration descriptor +
-   *                              = 4
-   *
-   * This value doesn't take into account number of descriptors manually added
-   * In case of descriptors added, please update the max_attr_record value accordingly in the next SVCCTL_InitService User Section
-   */
-  max_attr_record = 4;
-
-  /* USER CODE BEGIN SVCCTL_InitService */
-  /* max_attr_record to be updated if descriptors have been added */
-
-  /* USER CODE END SVCCTL_InitService */
-
-  uuid.Char_UUID_16 = 0x180f;
-  ret = aci_gatt_add_service(UUID_TYPE_16,
-                             (Service_UUID_t *) &uuid,
-                             PRIMARY_SERVICE,
-                             max_attr_record,
-                             &(CustomContext.CustomBatHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_service command: BAT, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_service command: BAT \n\r");
-  }
-
-  /**
-   *  BatteryLevel
-   */
-  uuid.Char_UUID_16 = 0x2a19;
-  ret = aci_gatt_add_char(CustomContext.CustomBatHdle,
-                          UUID_TYPE_16, &uuid,
-                          SizeBat_Lvl,
-                          CHAR_PROP_READ | CHAR_PROP_NOTIFY,
-                          ATTR_PERMISSION_NONE,
-                          GATT_DONT_NOTIFY_EVENTS,
-                          0x10,
-                          CHAR_VALUE_LEN_CONSTANT,
-                          &(CustomContext.CustomBat_LvlHdle));
-  if (ret != BLE_STATUS_SUCCESS)
-  {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : BAT_LVL, error code: 0x%x \n\r", ret);
-  }
-  else
-  {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : BAT_LVL \n\r");
-  }
-
-  /* USER CODE BEGIN SVCCTL_Init_Service3_Char1 */
-  /* Place holder for Characteristic Descriptors */
-
-  /* USER CODE END SVCCTL_Init_Service3_Char1 */
+  /* USER CODE END SVCCTL_Init_Service1_Char1 */
 
   /* USER CODE BEGIN SVCCTL_InitCustomSvc_2 */
 
@@ -652,44 +313,6 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
   switch (CharOpcode)
   {
 
-    case CUSTOM_STM_PROT_MODE:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomProt_ModeHdle,
-                                       0, /* charValOffset */
-                                       SizeProt_Mode, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value PROT_MODE command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value PROT_MODE command\n\r");
-      }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_1*/
-
-      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_1*/
-      break;
-
-    case CUSTOM_STM_REPORT:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomReportHdle,
-                                       0, /* charValOffset */
-                                       SizeReport, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value REPORT command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value REPORT command\n\r");
-      }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_2*/
-
-      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_2*/
-      break;
-
     case CUSTOM_STM_REP_MAP:
       ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
                                        CustomContext.CustomRep_MapHdle,
@@ -704,85 +327,9 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
       {
         APP_DBG_MSG("  Success: aci_gatt_update_char_value REP_MAP command\n\r");
       }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_3*/
+      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_1*/
 
-      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_3*/
-      break;
-
-    case CUSTOM_STM_INFO:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomInfoHdle,
-                                       0, /* charValOffset */
-                                       SizeInfo, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value INFO command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value INFO command\n\r");
-      }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_4*/
-
-      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_4*/
-      break;
-
-    case CUSTOM_STM_CTRL_PT:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomCtrl_PtHdle,
-                                       0, /* charValOffset */
-                                       SizeCtrl_Pt, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value CTRL_PT command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value CTRL_PT command\n\r");
-      }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_5*/
-
-      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_5*/
-      break;
-
-    case CUSTOM_STM_PNP_ID:
-      ret = aci_gatt_update_char_value(CustomContext.CustomDev_InfoHdle,
-                                       CustomContext.CustomPnp_IdHdle,
-                                       0, /* charValOffset */
-                                       SizePnp_Id, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value PNP_ID command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value PNP_ID command\n\r");
-      }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_2_Char_1*/
-
-      /* USER CODE END CUSTOM_STM_App_Update_Service_2_Char_1*/
-      break;
-
-    case CUSTOM_STM_BAT_LVL:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBatHdle,
-                                       CustomContext.CustomBat_LvlHdle,
-                                       0, /* charValOffset */
-                                       SizeBat_Lvl, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value BAT_LVL command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value BAT_LVL command\n\r");
-      }
-      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_3_Char_1*/
-
-      /* USER CODE END CUSTOM_STM_App_Update_Service_3_Char_1*/
+      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_1*/
       break;
 
     default:
@@ -813,44 +360,6 @@ tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t C
   switch (CharOpcode)
   {
 
-    case CUSTOM_STM_PROT_MODE:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomProt_ModeHdle,
-                                       0, /* charValOffset */
-                                       size, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value PROT_MODE command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value PROT_MODE command\n\r");
-      }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_1*/
-
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_1*/
-      break;
-
-    case CUSTOM_STM_REPORT:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomReportHdle,
-                                       0, /* charValOffset */
-                                       size, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value REPORT command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value REPORT command\n\r");
-      }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_2*/
-
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_2*/
-      break;
-
     case CUSTOM_STM_REP_MAP:
       ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
                                        CustomContext.CustomRep_MapHdle,
@@ -865,85 +374,9 @@ tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t C
       {
         APP_DBG_MSG("  Success: aci_gatt_update_char_value REP_MAP command\n\r");
       }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_3*/
+      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_1*/
 
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_3*/
-      break;
-
-    case CUSTOM_STM_INFO:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomInfoHdle,
-                                       0, /* charValOffset */
-                                       size, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value INFO command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value INFO command\n\r");
-      }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_4*/
-
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_4*/
-      break;
-
-    case CUSTOM_STM_CTRL_PT:
-      ret = aci_gatt_update_char_value(CustomContext.CustomHidHdle,
-                                       CustomContext.CustomCtrl_PtHdle,
-                                       0, /* charValOffset */
-                                       size, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value CTRL_PT command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value CTRL_PT command\n\r");
-      }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_5*/
-
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_5*/
-      break;
-
-    case CUSTOM_STM_PNP_ID:
-      ret = aci_gatt_update_char_value(CustomContext.CustomDev_InfoHdle,
-                                       CustomContext.CustomPnp_IdHdle,
-                                       0, /* charValOffset */
-                                       size, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value PNP_ID command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value PNP_ID command\n\r");
-      }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_2_Char_1*/
-
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_2_Char_1*/
-      break;
-
-    case CUSTOM_STM_BAT_LVL:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBatHdle,
-                                       CustomContext.CustomBat_LvlHdle,
-                                       0, /* charValOffset */
-                                       size, /* charValueLen */
-                                       (uint8_t *)  pPayload);
-      if (ret != BLE_STATUS_SUCCESS)
-      {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value BAT_LVL command, result : 0x%x \n\r", ret);
-      }
-      else
-      {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value BAT_LVL command\n\r");
-      }
-      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_3_Char_1*/
-
-      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_3_Char_1*/
+      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_1*/
       break;
 
     default:
@@ -974,59 +407,11 @@ tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM
   switch (CharOpcode)
   {
 
-    case CUSTOM_STM_PROT_MODE:
+    case CUSTOM_STM_REP_MAP:
       /* USER CODE BEGIN Updated_Length_Service_1_Char_1*/
 
       /* USER CODE END Updated_Length_Service_1_Char_1*/
-	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomHidHdle, CustomContext.CustomProt_ModeHdle, SizeProt_Mode, pPayload);
-
-      break;
-
-    case CUSTOM_STM_REPORT:
-      /* USER CODE BEGIN Updated_Length_Service_1_Char_2*/
-
-      /* USER CODE END Updated_Length_Service_1_Char_2*/
-	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomHidHdle, CustomContext.CustomReportHdle, SizeReport, pPayload);
-
-      break;
-
-    case CUSTOM_STM_REP_MAP:
-      /* USER CODE BEGIN Updated_Length_Service_1_Char_3*/
-
-      /* USER CODE END Updated_Length_Service_1_Char_3*/
 	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomHidHdle, CustomContext.CustomRep_MapHdle, SizeRep_Map, pPayload);
-
-      break;
-
-    case CUSTOM_STM_INFO:
-      /* USER CODE BEGIN Updated_Length_Service_1_Char_4*/
-
-      /* USER CODE END Updated_Length_Service_1_Char_4*/
-	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomHidHdle, CustomContext.CustomInfoHdle, SizeInfo, pPayload);
-
-      break;
-
-    case CUSTOM_STM_CTRL_PT:
-      /* USER CODE BEGIN Updated_Length_Service_1_Char_5*/
-
-      /* USER CODE END Updated_Length_Service_1_Char_5*/
-	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomHidHdle, CustomContext.CustomCtrl_PtHdle, SizeCtrl_Pt, pPayload);
-
-      break;
-
-    case CUSTOM_STM_PNP_ID:
-      /* USER CODE BEGIN Updated_Length_Service_2_Char_1*/
-
-      /* USER CODE END Updated_Length_Service_2_Char_1*/
-	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomDev_InfoHdle, CustomContext.CustomPnp_IdHdle, SizePnp_Id, pPayload);
-
-      break;
-
-    case CUSTOM_STM_BAT_LVL:
-      /* USER CODE BEGIN Updated_Length_Service_3_Char_1*/
-
-      /* USER CODE END Updated_Length_Service_3_Char_1*/
-	  Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBatHdle, CustomContext.CustomBat_LvlHdle, SizeBat_Lvl, pPayload);
 
       break;
 

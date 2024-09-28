@@ -35,38 +35,14 @@ extern "C" {
 typedef enum
 {
   /* Human_Interface_Device */
-  CUSTOM_STM_PROT_MODE,
-  CUSTOM_STM_REPORT,
   CUSTOM_STM_REP_MAP,
-  CUSTOM_STM_INFO,
-  CUSTOM_STM_CTRL_PT,
-  /* Device_Information */
-  CUSTOM_STM_PNP_ID,
-  /* Battery */
-  CUSTOM_STM_BAT_LVL,
 } Custom_STM_Char_Opcode_t;
 
 typedef enum
 {
-  /* ProtocolMode */
-  CUSTOM_STM_PROT_MODE_READ_EVT,
-  CUSTOM_STM_PROT_MODE_WRITE_NO_RESP_EVT,
-  /* Report */
-  CUSTOM_STM_REPORT_READ_EVT,
-  CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT,
-  CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT,
   /* ReportMap */
   CUSTOM_STM_REP_MAP_READ_EVT,
-  /* Information */
-  CUSTOM_STM_INFO_READ_EVT,
-  /* ControlPoint */
-  CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT,
-  /* PnP_ID */
-  CUSTOM_STM_PNP_ID_READ_EVT,
-  /* BatteryLevel */
-  CUSTOM_STM_BAT_LVL_READ_EVT,
-  CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT,
-  CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT,
+  CUSTOM_STM_REP_MAP_WRITE_NO_RESP_EVT,
   CUSTOM_STM_NOTIFICATION_COMPLETE_EVT,
 
   CUSTOM_STM_BOOT_REQUEST_EVT
@@ -92,13 +68,7 @@ typedef struct
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-extern uint16_t SizeProt_Mode;
-extern uint16_t SizeReport;
 extern uint16_t SizeRep_Map;
-extern uint16_t SizeInfo;
-extern uint16_t SizeCtrl_Pt;
-extern uint16_t SizePnp_Id;
-extern uint16_t SizeBat_Lvl;
 
 /* USER CODE BEGIN EC */
 

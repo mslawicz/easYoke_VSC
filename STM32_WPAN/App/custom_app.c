@@ -36,10 +36,6 @@
 typedef struct
 {
   /* Human_Interface_Device */
-  uint8_t               Report_Notification_Status;
-  /* Device_Information */
-  /* Battery */
-  uint8_t               Bat_lvl_Notification_Status;
   /* USER CODE BEGIN CUSTOM_APP_Context_t */
 
   /* USER CODE END CUSTOM_APP_Context_t */
@@ -127,12 +123,6 @@ static const uint8_t HID_report_map[] =
 
 /* Private function prototypes -----------------------------------------------*/
 /* Human_Interface_Device */
-static void Custom_Report_Update_Char(void);
-static void Custom_Report_Send_Notification(void);
-/* Device_Information */
-/* Battery */
-static void Custom_Bat_lvl_Update_Char(void);
-static void Custom_Bat_lvl_Send_Notification(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -151,82 +141,16 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     /* USER CODE END CUSTOM_STM_App_Notification_Custom_Evt_Opcode */
 
     /* Human_Interface_Device */
-    case CUSTOM_STM_PROT_MODE_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_PROT_MODE_READ_EVT */
-
-      /* USER CODE END CUSTOM_STM_PROT_MODE_READ_EVT */
-      break;
-
-    case CUSTOM_STM_PROT_MODE_WRITE_NO_RESP_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_PROT_MODE_WRITE_NO_RESP_EVT */
-
-      /* USER CODE END CUSTOM_STM_PROT_MODE_WRITE_NO_RESP_EVT */
-      break;
-
-    case CUSTOM_STM_REPORT_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_REPORT_READ_EVT */
-      APP_DBG_MSG("CUSTOM_STM_REPORT_READ_EVT\n\r");
-      /* USER CODE END CUSTOM_STM_REPORT_READ_EVT */
-      break;
-
-    case CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT */
-      APP_DBG_MSG("CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT\n\r");
-      Custom_App_Context.Report_Notification_Status = 1;
-      /* USER CODE END CUSTOM_STM_REPORT_NOTIFY_ENABLED_EVT */
-      break;
-
-    case CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT */
-      APP_DBG_MSG("CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT\n\r");
-      Custom_App_Context.Report_Notification_Status = 0;
-      /* USER CODE END CUSTOM_STM_REPORT_NOTIFY_DISABLED_EVT */
-      break;
-
     case CUSTOM_STM_REP_MAP_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_REP_MAP_READ_EVT */
       APP_DBG_MSG("CUSTOM_STM_REP_MAP_READ_EVT\n\r");
       /* USER CODE END CUSTOM_STM_REP_MAP_READ_EVT */
       break;
 
-    case CUSTOM_STM_INFO_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_INFO_READ_EVT */
-      APP_DBG_MSG("CUSTOM_STM_INFO_READ_EVT\n\r");
-      /* USER CODE END CUSTOM_STM_INFO_READ_EVT */
-      break;
+    case CUSTOM_STM_REP_MAP_WRITE_NO_RESP_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_REP_MAP_WRITE_NO_RESP_EVT */
 
-    case CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT */
-      APP_DBG_MSG("CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT\n\r");
-      /* USER CODE END CUSTOM_STM_CTRL_PT_WRITE_NO_RESP_EVT */
-      break;
-
-    /* Device_Information */
-    case CUSTOM_STM_PNP_ID_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_PNP_ID_READ_EVT */
-      APP_DBG_MSG("CUSTOM_STM_PNP_ID_READ_EVT\n\r");
-      /* USER CODE END CUSTOM_STM_PNP_ID_READ_EVT */
-      break;
-
-    /* Battery */
-    case CUSTOM_STM_BAT_LVL_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_READ_EVT */
-      APP_DBG_MSG("CUSTOM_STM_BAT_LVL_READ_EVT\n\r");
-      /* USER CODE END CUSTOM_STM_BAT_LVL_READ_EVT */
-      break;
-
-    case CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT */
-      APP_DBG_MSG("CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT\n\r");
-      Custom_App_Context.Bat_lvl_Notification_Status = 1;
-      /* USER CODE END CUSTOM_STM_BAT_LVL_NOTIFY_ENABLED_EVT */
-      break;
-
-    case CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT */
-      APP_DBG_MSG("CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT\n\r");
-      Custom_App_Context.Bat_lvl_Notification_Status = 0;
-      /* USER CODE END CUSTOM_STM_BAT_LVL_NOTIFY_DISABLED_EVT */
+      /* USER CODE END CUSTOM_STM_REP_MAP_WRITE_NO_RESP_EVT */
       break;
 
     case CUSTOM_STM_NOTIFICATION_COMPLETE_EVT:
@@ -290,44 +214,45 @@ void Custom_APP_Init(void)
   uint8_t* pBuf;
 
   /* set battery level characteristic */
-  setBatteryLevelPct(69); //XXX test
+  setBatteryLevelPct(70); //XXX test
 
-  /* set PnP_ID characteristic */
-  pBuf = UpdateCharData;
-  PLACE_DATA(pBuf, uint8_t, 0x02);  // Vendor ID source
-  PLACE_DATA(pBuf, uint16_t, 0x0483); // Vendor ID STMicroelectronics
-  PLACE_DATA(pBuf, uint16_t, 0x5710); // Product ID joystick in FS mode
-  PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 
-  Custom_STM_App_Update_Char(CUSTOM_STM_PNP_ID, UpdateCharData);
+  // /* set PnP_ID characteristic */
+  // pBuf = UpdateCharData;
+  // PLACE_DATA(pBuf, uint8_t, 0x02);  // Vendor ID source
+  // PLACE_DATA(pBuf, uint16_t, 0x0483); // Vendor ID STMicroelectronics
+  // PLACE_DATA(pBuf, uint16_t, 0x5710); // Product ID joystick in FS mode
+  // PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 
+  // Custom_STM_App_Update_Char(CUSTOM_STM_PNP_ID, UpdateCharData);
 
-  /* set HID protocol mode characteristic */
-  pBuf = UpdateCharData;
-  PLACE_DATA(pBuf, uint8_t, 0x01);  // Report Protocol mode
-  Custom_STM_App_Update_Char(CUSTOM_STM_PROT_MODE, UpdateCharData);
+  // /* set HID protocol mode characteristic */
+  // pBuf = UpdateCharData;
+  // PLACE_DATA(pBuf, uint8_t, 0x01);  // Report Protocol mode
+  // Custom_STM_App_Update_Char(CUSTOM_STM_PROT_MODE, UpdateCharData);
 
-  /* set HID information characteristic */
-  pBuf = UpdateCharData;
-  PLACE_DATA(pBuf, uint16_t, 0x0100); // bcd_HID
-  PLACE_DATA(pBuf, uint8_t, 0);  // country code (not localized)
-  PLACE_DATA(pBuf, uint8_t, 0x03); // flags
-  Custom_STM_App_Update_Char(CUSTOM_STM_INFO, UpdateCharData);
+  // /* set HID information characteristic */
+  // pBuf = UpdateCharData;
+  // PLACE_DATA(pBuf, uint16_t, 0x0100); // bcd_HID
+  // PLACE_DATA(pBuf, uint8_t, 0);  // country code (not localized)
+  // PLACE_DATA(pBuf, uint8_t, 0x03); // flags
+  // Custom_STM_App_Update_Char(CUSTOM_STM_INFO, UpdateCharData);
 
   /* set HID report map */
-  SizeRep_Map = sizeof(HID_report_map);
+  //SizeRep_Map = sizeof(HID_report_map);
   pBuf = UpdateCharData;
-  PLACE_ARRAY(pBuf, HID_report_map, sizeof(HID_report_map));
+  //PLACE_ARRAY(pBuf, HID_report_map, sizeof(HID_report_map));
+  PLACE_DATA(pBuf, uint8_t, 0x11);
   Custom_STM_App_Update_Char(CUSTOM_STM_REP_MAP, UpdateCharData);
 
-  /* set HID report */
-  SizeReport = HID_REPORT_SIZE;
-  memset(UpdateCharData, 0, 8);
-  UpdateCharData[1] = 0x40; //XXX test
-  UpdateCharData[3] = 0x8A;
-  UpdateCharData[5] = 80;
-  UpdateCharData[7] = 0x8F;  
-  UpdateCharData[8] = 3;
-  UpdateCharData[9] = 0xAA;
-  Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, UpdateCharData);
+  // /* set HID report */
+  // SizeReport = HID_REPORT_SIZE;
+  // memset(UpdateCharData, 0, 8);
+  // UpdateCharData[1] = 0x40; //XXX test
+  // UpdateCharData[3] = 0x8A;
+  // UpdateCharData[5] = 80;
+  // UpdateCharData[7] = 0x8F;  
+  // UpdateCharData[8] = 3;
+  // UpdateCharData[9] = 0xAA;
+  // Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, UpdateCharData);
 
   /* USER CODE END CUSTOM_APP_Init */
   return;
@@ -344,96 +269,6 @@ void Custom_APP_Init(void)
  *************************************************************/
 
 /* Human_Interface_Device */
-__USED void Custom_Report_Update_Char(void) /* Property Read */
-{
-  uint8_t updateflag = 0;
-
-  /* USER CODE BEGIN Report_UC_1*/
-  if(pHidReport != NULL)
-  {
-    memcpy(UpdateCharData, pHidReport, HID_REPORT_SIZE);
-    pHidReport = NULL;
-    updateflag = 1;
-  }
-  /* USER CODE END Report_UC_1*/
-
-  if (updateflag != 0)
-  {
-    Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, (uint8_t *)UpdateCharData);
-  }
-
-  /* USER CODE BEGIN Report_UC_Last*/
-
-  /* USER CODE END Report_UC_Last*/
-  return;
-}
-
-void Custom_Report_Send_Notification(void) /* Property Notification */
-{
-  uint8_t updateflag = 0;
-
-  /* USER CODE BEGIN Report_NS_1*/
-  if(pHidReport != NULL)
-  {
-    memcpy(NotifyCharData, pHidReport, HID_REPORT_SIZE);
-    pHidReport = NULL;
-    updateflag = Custom_App_Context.Report_Notification_Status;
-  }
-  /* USER CODE END Report_NS_1*/
-
-  if (updateflag != 0)
-  {
-    Custom_STM_App_Update_Char(CUSTOM_STM_REPORT, (uint8_t *)NotifyCharData);
-  }
-
-  /* USER CODE BEGIN Report_NS_Last*/
-
-  /* USER CODE END Report_NS_Last*/
-
-  return;
-}
-
-/* Device_Information */
-/* Battery */
-__USED void Custom_Bat_lvl_Update_Char(void) /* Property Read */
-{
-  uint8_t updateflag = 0;
-
-  /* USER CODE BEGIN Bat_lvl_UC_1*/
-  UpdateCharData[0] = batteryLevelPct;
-  updateflag = 1;
-  /* USER CODE END Bat_lvl_UC_1*/
-
-  if (updateflag != 0)
-  {
-    Custom_STM_App_Update_Char(CUSTOM_STM_BAT_LVL, (uint8_t *)UpdateCharData);
-  }
-
-  /* USER CODE BEGIN Bat_lvl_UC_Last*/
-
-  /* USER CODE END Bat_lvl_UC_Last*/
-  return;
-}
-
-void Custom_Bat_lvl_Send_Notification(void) /* Property Notification */
-{
-  uint8_t updateflag = 0;
-
-  /* USER CODE BEGIN Bat_lvl_NS_1*/
-  updateflag = Custom_App_Context.Bat_lvl_Notification_Status;
-  /* USER CODE END Bat_lvl_NS_1*/
-
-  if (updateflag != 0)
-  {
-    Custom_STM_App_Update_Char(CUSTOM_STM_BAT_LVL, (uint8_t *)NotifyCharData);
-  }
-
-  /* USER CODE BEGIN Bat_lvl_NS_Last*/
-
-  /* USER CODE END Bat_lvl_NS_Last*/
-
-  return;
-}
 
 /* USER CODE BEGIN FD_LOCAL_FUNCTIONS*/
 void setBatteryLevelPct(uint8_t batLvlPct)
@@ -441,13 +276,13 @@ void setBatteryLevelPct(uint8_t batLvlPct)
   if(batteryLevelPct != batLvlPct)
   {
     batteryLevelPct = batLvlPct;
-    Custom_Bat_lvl_Update_Char();
+    //Custom_Bat_lvl_Update_Char();
   }
 }
 
 void updateHidReport(uint8_t* pReport)
 {
   pHidReport = pReport;
-  Custom_Report_Update_Char();
+  //Custom_Report_Update_Char();
 }
 /* USER CODE END FD_LOCAL_FUNCTIONS*/
