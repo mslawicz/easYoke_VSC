@@ -23,9 +23,9 @@ void gameController(void)
     *(int16_t*)joyReport = axisVal;
     *(int16_t*)(joyReport + 2) = axisVal;
     *(int16_t*)(joyReport + 4) = axisVal;
-    *(int16_t*)(joyReport + 4) = 32767 - axisVal;
-    joyReport[6] = 1 + (loopCounter >> 4) % 8;  //HAT
-    joyReport[7] = 1 << ((loopCounter >> 5) % 8);   //buttons
+    *(int16_t*)(joyReport + 6) = 32767 - axisVal;
+    joyReport[8] = 1 + (loopCounter >> 4) % 8;  //HAT
+    joyReport[9] = 1 << ((loopCounter >> 5) % 8);   //buttons
     if(loopCounter % 90 == 89)
     {
         updateHidReport(joyReport);
