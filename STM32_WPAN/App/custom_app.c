@@ -448,6 +448,6 @@ void setBatteryLevelPct(uint8_t batLvlPct)
 void updateHidReport(uint8_t* pReport)
 {
   pHidReport = pReport;
-  Custom_Report_Update_Char();
+  Custom_Report_Send_Notification();
 }
 /* USER CODE END FD_LOCAL_FUNCTIONS*/
