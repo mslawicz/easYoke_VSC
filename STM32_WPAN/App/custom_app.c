@@ -294,7 +294,7 @@ void Custom_APP_Init(void)
 
   /* set PnP_ID characteristic */
   pBuf = UpdateCharData;
-  PLACE_DATA(pBuf, uint8_t, 0x02);  // Vendor ID source
+  PLACE_DATA(pBuf, uint8_t, 0x01);  // Vendor ID source
   PLACE_DATA(pBuf, uint16_t, 0x0483); // Vendor ID STMicroelectronics
   PLACE_DATA(pBuf, uint16_t, 0x5710); // Product ID joystick in FS mode
   PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 

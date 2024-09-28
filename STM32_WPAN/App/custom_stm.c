@@ -122,8 +122,6 @@ do {\
 #define COPY_REPORTMAP_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x00,0x00,0x2a,0x4b,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
 #define COPY_INFORMATION_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x00,0x00,0x2a,0x4a,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
 #define COPY_CONTROLPOINT_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x00,0x00,0x2a,0x4c,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
-#define COPY_PNP_ID_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x00,0x00,0x2a,0x50,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
-#define COPY_BATTERYLEVEL_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x00,0x00,0x2a,0x19,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
 
 /* USER CODE BEGIN PF */
 
@@ -560,9 +558,9 @@ void SVCCTL_InitCustomSvc(void)
   /**
    *  PnP_ID
    */
-  COPY_PNP_ID_UUID(uuid.Char_UUID_128);
+  uuid.Char_UUID_16 = 0x2a50;
   ret = aci_gatt_add_char(CustomContext.CustomDev_InfoHdle,
-                          UUID_TYPE_128, &uuid,
+                          UUID_TYPE_16, &uuid,
                           SizePnp_Id,
                           CHAR_PROP_READ,
                           ATTR_PERMISSION_NONE,
@@ -621,9 +619,9 @@ void SVCCTL_InitCustomSvc(void)
   /**
    *  BatteryLevel
    */
-  COPY_BATTERYLEVEL_UUID(uuid.Char_UUID_128);
+  uuid.Char_UUID_16 = 0x2a19;
   ret = aci_gatt_add_char(CustomContext.CustomBatHdle,
-                          UUID_TYPE_128, &uuid,
+                          UUID_TYPE_16, &uuid,
                           SizeBat_Lvl,
                           CHAR_PROP_READ | CHAR_PROP_NOTIFY,
                           ATTR_PERMISSION_NONE,
