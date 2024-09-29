@@ -292,11 +292,20 @@ void Custom_APP_Init(void)
   /* set battery level characteristic */
   setBatteryLevelPct(69); //XXX test
 
-  /* set PnP_ID characteristic */
+  /* set PnP_ID characteristic
+  0x5710 3 axis 8 button joystick with hat switch
+  0x5711 Nucleo Yoke
+  0x5712 WristBreaker
+  0x5713 Deadstick
+  0x5714 uTQ
+  0x5715 micro TQ
+  0x5716 MultiHID
+  0x5717 4 axis 8 button joystick with hat switch
+  */
   pBuf = UpdateCharData;
   PLACE_DATA(pBuf, uint8_t, 0x00);  // Vendor ID source
   PLACE_DATA(pBuf, uint16_t, 0x0483); // Vendor ID STMicroelectronics
-  PLACE_DATA(pBuf, uint16_t, 0x5710); // Product ID joystick in FS mode
+  PLACE_DATA(pBuf, uint16_t, 0x5717); // Product ID joystick in FS mode
   PLACE_DATA(pBuf, uint16_t, 0x0001); // Product version 
   Custom_STM_App_Update_Char(CUSTOM_STM_PNP_ID, UpdateCharData);
 
